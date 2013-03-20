@@ -8,7 +8,7 @@ USAGE
 1. Download markdown.pl from http://daringfireball.net/projects/markdown/
 2. Place all your markdown.txt files in directories that are children to wherever the syndicate.py script is located
 3. Edit post.html to your liking. This file serves as a template for all of your posts. Reserve {{ title }} and {{ body }} patterns for Syndicate to parse. The {{ title }} pattern will be replaced with the first line of each Markdown file, with leading # removed. The {{ body }} pattern will be replaced with the contents of your entire parsed Markdown file.
-4. Run "python producer.py post.html"
+4. Run "python syndicate.py post.html"
 5. You'll find an index.html in every directory that has a markdown.txt
 
 GENERATING STATIC WEB SITES
