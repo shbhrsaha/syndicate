@@ -6,9 +6,12 @@ Syndicate converts all the Markdown files in a directory into HTML files accordi
 USAGE
 =====
 1. Download markdown.pl from http://daringfireball.net/projects/markdown/
-2. Place all your markdown.txt files in directories that are children to wherever the syndicate.py script is located
+2. Place all your markdown.txt files in directories that are children to wherever the syndicate.py script is located. Note that all your markdown files should have this file name ('markdown.txt').
 3. Edit post.html to your liking. This file serves as a template for all of your posts. Reserve {{ title }} and {{ body }} patterns for Syndicate to parse. The {{ title }} pattern will be replaced with the first line of each Markdown file, with leading # removed. The {{ body }} pattern will be replaced with the contents of your entire parsed Markdown file.
-4. Run "python syndicate.py post.html"
+4. Run "python syndicate.py [--gfm] [template]"
+
+    * [--gfm] indicates that you'd like your posts to be parsed with [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown) (defaults to 'False'). Requires Ruby.
+    * [template] specifies the HTML post template file (defaults to 'post.html').
 5. You'll find an index.html in every directory that has a markdown.txt
 
 GENERATING STATIC WEB SITES
