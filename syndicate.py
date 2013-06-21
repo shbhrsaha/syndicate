@@ -1,18 +1,15 @@
 # this script converts your markdown into a production-ready web site
 
-import os, sys, csv
+import os, sys, csv, argparse
 
-# filename for post template, should be in same directory
+# get optional command-line arguments
+parser = argparse.ArgumentParser("Turn Markdown files into static web sites.")
+parser.add_argument('template_file', metavar='template', nargs='?', default="post.html", help='post template file')
+parser.add_argument('--gfm', dest='gfm', action='store_const', const=True, default=False, help='activate github-flavored markdown')
+args = parser.parse_args()
 
-try:
-    post_template_name = sys.argv[1]
-except:
-    print "Please provide a post template file!"
-
-print "Starting Syndicate..."
-
-template_file = open(post_template_name, "rb")
-templateHTML = template_file.read()
+# gather template file HTML
+templateHTML = file(args.template_file, "rb").read()
 
 # iterate over all markdown files in this directory and subdirectories
 
@@ -25,17 +22,20 @@ csv_files = [os.path.join(root, name)
              for name in files
              if name == FILENAME_MATCH]
 
+# set compilation function
+compile_markdown = "ruby gfm.rb %s | perl markdown.pl > temp.txt" if args.gfm else "perl markdown.pl %s > temp.txt"
+
 for file_path in csv_files:
-    
+
     print "Producing " + file_path
-    
+
     # determine the current directory
     pathArray = file_path.split("/")
     del(pathArray[-1])
     directory = "/".join(pathArray)
-    
+
     sys.stdout.flush()
-    
+
     # extract the title from the markdown
     with open(file_path, 'r') as f:
         title = f.readline()
@@ -43,8 +43,8 @@ for file_path in csv_files:
         title = title[1:]
 
     # run the converter and output to a temp.txt
-    os.system("perl markdown.pl "+file_path+" > temp.txt")
-    
+    os.system(compile_markdown % file_path)
+
     # now read the output from temp.txt and inject into post.html
     temp_file = open("temp.txt", "rb")
     tempHTML = temp_file.read()
@@ -56,5 +56,6 @@ for file_path in csv_files:
     productionFile = open(directory+"/index.html", "w")
     productionFile.write(productionHTML)
 
-os.system("rm temp.txt")
+if os.path.exists("temp.txt"):
+    os.system("rm temp.txt")
 print "Production complete."
