@@ -1,11 +1,12 @@
 # this script converts your markdown into a production-ready web site
 
-import os, sys, csv, argparse
+import os, sys, csv, argparse, subprocess
 
 # get optional command-line arguments
 parser = argparse.ArgumentParser("Turn Markdown files into static web sites.")
 parser.add_argument('template_file', metavar='template', nargs='?', default="post.html", help='post template file')
 parser.add_argument('--gfm', dest='gfm', action='store_const', const=True, default=False, help='activate github-flavored markdown')
+parser.add_argument('--minify', dest='minify', action='store_const', const=True, default=False, help='activate CSS minification')
 args = parser.parse_args()
 
 # gather template file HTML
@@ -15,6 +16,7 @@ templateHTML = file(args.template_file, "rb").read()
 
 ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FILENAME_MATCH = "markdown.txt"
+CSS_DIRECTORY = ROOT_DIRECTORY + "/production/static/css/"
 
 # a list of all the files in ROOT_DIRECTORY that match FILENAME_MATCH
 csv_files = [os.path.join(root, name)
@@ -23,8 +25,28 @@ csv_files = [os.path.join(root, name)
              if name == FILENAME_MATCH]
 
 # set compilation function
-compile_markdown = "ruby gfm.rb %s | perl markdown.pl > temp.txt" if args.gfm else "perl markdown.pl %s > temp.txt"
+compile_markdown = "ruby utils/gfm.rb %s | perl utils/markdown.pl > temp.txt" if args.gfm else "perl utils/markdown.pl %s > temp.txt"
 
+# compress CSS
+if args.minify:
+    combined_css_path = CSS_DIRECTORY + 'combined.css'
+    # delete CSS if already exists
+    if os.path.isfile(combined_css_path):
+        os.remove(combined_css_path)
+
+    # merge all CSS
+    css_files = [os.path.join(root, name) for root, dirs, files in os.walk(CSS_DIRECTORY) for name in files if ".css" in name]
+    all_css = ''.join([open(f).read() for f in css_files])
+
+    # compress CSS
+    from cssmin import cssmin
+    minifed_css = cssmin(all_css)
+
+    # store all CSS in single file
+    combined_css = open(combined_css_path, "w+")
+    combined_css.write(minifed_css)
+
+# generate blog posts
 for file_path in csv_files:
 
     print "Producing " + file_path
@@ -51,6 +73,11 @@ for file_path in csv_files:
 
     productionHTML = templateHTML.replace("{{ title }}", title)
     productionHTML = productionHTML.replace("{{ body }}", tempHTML)
+    if args.minify:
+        # need to get relative path from HTML file to minified css
+        common_prefix = os.path.commonprefix([file_path, combined_css_path])
+        relative_path = '../' + os.path.relpath(combined_css_path, common_prefix)
+        productionHTML = productionHTML.replace("{{ minified_css }}", relative_path)
 
     # write that production output to index.html in original directory
     productionFile = open(directory+"/index.html", "w")
