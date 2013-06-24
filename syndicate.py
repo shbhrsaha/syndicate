@@ -1,13 +1,16 @@
 # this script converts your markdown into a production-ready web site
 
-import os, sys, csv, argparse, subprocess
+import os, sys, csv, argparse, subprocess, datetime
 
 # get optional command-line arguments
 parser = argparse.ArgumentParser("Turn Markdown files into static web sites.")
-parser.add_argument('template_file', metavar='template', nargs='?', default="post.html", help='post template file')
+parser.add_argument('--template', dest='template_file', metavar='template_file', nargs='?', default="post.html", help='post template file')
 parser.add_argument('--gfm', dest='gfm', action='store_const', const=True, default=False, help='activate github-flavored markdown')
 parser.add_argument('--minify', dest='minify', action='store_const', const=True, default=False, help='activate CSS minification')
+parser.add_argument('posts', nargs='*', default=[], help='a list of posts to generate (defaults to all possible posts), specified by the name of the post\'s directory')
 args = parser.parse_args()
+
+print args
 
 # gather template file HTML
 templateHTML = file(args.template_file, "rb").read()
@@ -19,10 +22,12 @@ FILENAME_MATCH = "markdown.txt"
 CSS_DIRECTORY = ROOT_DIRECTORY + "/production/static/css/"
 
 # a list of all the files in ROOT_DIRECTORY that match FILENAME_MATCH
+def post_filter(path):
+    return (not args.posts) or (root.split('/')[-1] in args.posts)
 csv_files = [os.path.join(root, name)
              for root, dirs, files in os.walk(ROOT_DIRECTORY)
              for name in files
-             if name == FILENAME_MATCH]
+             if name == FILENAME_MATCH and post_filter(root)]
 
 # set compilation function
 compile_markdown = "ruby utils/gfm.rb %s | perl utils/markdown.pl > temp.txt" if args.gfm else "perl utils/markdown.pl %s > temp.txt"
