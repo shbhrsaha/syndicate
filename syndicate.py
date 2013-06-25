@@ -1,6 +1,6 @@
 # this script converts your markdown into a production-ready web site
 
-import os, sys, csv, argparse, subprocess, datetime
+import os, sys, argparse
 
 # get optional command-line arguments
 parser = argparse.ArgumentParser("Turn Markdown files into static web sites.")
@@ -9,8 +9,6 @@ parser.add_argument('--gfm', dest='gfm', action='store_const', const=True, defau
 parser.add_argument('--minify', dest='minify', action='store_const', const=True, default=False, help='activate CSS minification')
 parser.add_argument('posts', nargs='*', default=[], help='a list of posts to generate (defaults to all possible posts), specified by the name of the post\'s directory')
 args = parser.parse_args()
-
-print args
 
 # gather template file HTML
 templateHTML = file(args.template_file, "rb").read()
