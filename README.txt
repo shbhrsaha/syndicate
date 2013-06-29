@@ -7,7 +7,7 @@ USAGE
 =====
 1. Place all your Markdown files in directories that are children to wherever the syndicate.py script is located. Note that all your markdown files should follow one of two naming conventions:
 
-    1. YYYY-MM-DD.[md | mdown | markdown | txt], if you want to use the date of the post in your template.
+    1. YYYY-MM-DD.[md | mdown | markdown | txt] (where YYYY is replaced with the year of the post date, MM with the month, and so forth), if you want to use the post date in your template.
     2. Simply: 'markdown.txt'.
 2. Edit post.html to your liking. This file serves as a template for all of your posts. Reserve {{ title }} and {{ body }} patterns for Syndicate to parse. The {{ title }} pattern will be replaced with the first line of each Markdown file, with leading # removed. The {{ body }} pattern will be replaced with the contents of your entire parsed Markdown file. The {{ date }} pattern will be replaced by the date as specified by the post's file name, if you choose to follow the YYYY-MM-DD convention.
 3. Run "python syndicate.py [--gfm] [--minify] [--template template_file] [posts]"
@@ -37,11 +37,11 @@ To use Syndicate to auto-generate static web sites, I suggest the following dire
 - - - img/
 - - - js/
 - - article1/
-- - - markdown.txt
+- - - YYYY-MM-DD.md (or markdown.txt)
 - - article2/
-- - - YYYY-MM-DD.md
+- - - YYYY-MM-DD.md (or markdown.txt)
 - - article3/
-- - - markdown.txt
+- - - YYYY-MM-DD.md (or markdown.txt)
 
 The example above shows a simple web site that contains three articles currently written in Markdown. Performing step #5 as described above will create index.html in the article1/, article2/, and article3/ folders.
 
