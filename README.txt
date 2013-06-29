@@ -5,8 +5,11 @@ Syndicate converts all the Markdown files in a directory into HTML files accordi
 
 USAGE
 =====
-1. Place all your markdown.txt files in directories that are children to wherever the syndicate.py script is located. Note that all your markdown files should have this file name ('markdown.txt').
-2. Edit post.html to your liking. This file serves as a template for all of your posts. Reserve {{ title }} and {{ body }} patterns for Syndicate to parse. The {{ title }} pattern will be replaced with the first line of each Markdown file, with leading # removed. The {{ body }} pattern will be replaced with the contents of your entire parsed Markdown file.
+1. Place all your Markdown files in directories that are children to wherever the syndicate.py script is located. Note that all your markdown files should follow one of two naming conventions:
+
+    1. YYYY-MM-DD.[md | mdown | markdown | txt], if you want to use the date of the post in your template.
+    2. Simply: 'markdown.txt'.
+2. Edit post.html to your liking. This file serves as a template for all of your posts. Reserve {{ title }} and {{ body }} patterns for Syndicate to parse. The {{ title }} pattern will be replaced with the first line of each Markdown file, with leading # removed. The {{ body }} pattern will be replaced with the contents of your entire parsed Markdown file. The {{ date }} pattern will be replaced by the date as specified by the post's file name, if you choose to follow the YYYY-MM-DD convention.
 3. Run "python syndicate.py [--gfm] [--minify] [--template template_file] [posts]"
 
     * [--gfm] indicates that you'd like your posts to be parsed with [GitHub Flavored Markdown](https://help.github.com/articles/github-flavored-markdown) (defaults to 'False'). Requires Ruby.
@@ -36,7 +39,7 @@ To use Syndicate to auto-generate static web sites, I suggest the following dire
 - - article1/
 - - - markdown.txt
 - - article2/
-- - - markdown.txt
+- - - YYYY-MM-DD.md
 - - article3/
 - - - markdown.txt
 

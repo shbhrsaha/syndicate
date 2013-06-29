@@ -1,0 +1,3 @@
+# Sample post (without date)
+
+This is a sample post.
