@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser("Turn Markdown files into static web sites.")
 parser.add_argument('--template', dest='template_file', metavar='template_file', nargs='?', default="post.html", help='post template file')
 parser.add_argument('--gfm', dest='gfm', action='store_const', const=True, default=False, help='activate github-flavored markdown')
 parser.add_argument('--minify', dest='minify', action='store_const', const=True, default=False, help='activate CSS minification')
+parser.add_argument('--prettify', dest='prettify', action='store_const', const=True, default=False, help='activate code syntax highlighting')
 parser.add_argument('posts', nargs='*', default=[], help='a list of posts to generate (defaults to all possible posts), specified by the name of the post\'s directory')
 args = parser.parse_args()
 
@@ -95,6 +96,10 @@ for file_path in csv_files:
         common_prefix = os.path.commonprefix([file_path, combined_css_path])
         relative_path = '../' + os.path.relpath(combined_css_path, common_prefix)
         productionHTML = productionHTML.replace("{{ minified_css }}", relative_path)
+    if args.prettify:
+        # need to do two passes b/c possible negative lookbehind solution requires fixed-length regex
+        productionHTML = productionHTML.replace('<code', '<code class="prettyprint"')
+        productionHTML = re.sub(r'(\<\!--\?prettify(.*)\?--\>\n\n\<pre.*\>)<code class="prettyprint"', r'\1<code', productionHTML)
 
     # write that production output to index.html in original directory
     productionFile = open(directory+"/index.html", "w")
