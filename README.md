@@ -6,7 +6,7 @@ A simple Markdown-based static site generator
 
 Introduction
 ---
-Syndicate converts all the Markdown files in a directory into HTML files according to a user-defined template. You can use this script to auto-generate static web sites with consistent styles and layout on each page. Learn more at http://www.princeton.edu/~saha/syndicate/
+Syndicate converts all the Markdown files in a directory into HTML files according to a user-defined template. You can use this script to auto-generate static web sites with consistent styles and layout on each page.
 
 Usage
 ---
