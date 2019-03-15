@@ -17,8 +17,8 @@ templateHTML = file(args.template_file, "rb").read()
 # iterate over all markdown files in this directory and subdirectories
 
 ROOT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
-FILENAME_MATCH = "markdown.txt"
-FILENAME_DATE = re.compile(r'([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})\.(md|txt|markdown|mdown)$')
+FILENAME_MATCH = re.compile(r'(\w)*\.(md|txt|markdown|mdown)$', re.UNICODE)
+FILENAME_DATE = re.compile(r'([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})\.(md|txt|markdown|mdown)$', re.UNICODE)
 CSS_DIRECTORY = ROOT_DIRECTORY + "/production/static/css/"
 
 
